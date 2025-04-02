@@ -112,6 +112,7 @@ def mockmatmul(mat1, mat2):
     """
     cf = sys._getframe()
     qbmm_mod = None
+    lineno = cf.f_back.f_lineno
     while cf.f_back and qbmm_mod is None:
         # First frame is QBmm's forward itself, can start searching from previous stack
         cf = cf.f_back
@@ -121,7 +122,7 @@ def mockmatmul(mat1, mat2):
             mod_calling_bmm_function = cf.f_locals["self"]
             # If not found -> default to torch.bmm
             qbmm_mod = getattr(
-                mod_calling_bmm_function, "QBmm" + str(cf.f_lineno), torch.bmm
+                mod_calling_bmm_function, "QBmm" + str(lineno), torch.bmm
             )
     del cf
 
